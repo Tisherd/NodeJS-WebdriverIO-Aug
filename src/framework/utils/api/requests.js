@@ -17,7 +17,13 @@ class Requests {
     static async post(url, requestData) {
         try {
             Logger.info(`Send post request to ${url}`);
-            const response = await axios.post(url, requestData);
+            const response = await axios.post(url, 
+                requestData.data,
+                {
+                    params: requestData.params,
+                    headers: requestData.params
+                }
+            );
             return response;
 
         } catch (e) {

@@ -35,12 +35,20 @@ class Browser {
         await browser.setCookies(params);
     }
 
+    static async addCookie(cookie) {
+        await browser.addCookie(cookie);
+    }
+
     static async getCookies(names) {
         await browser.getCookies(names);
     }
 
     static async deleteCookies(names) {
         await browser.deleteCookies(names);
+    }
+
+    static async refresh(){
+        await browser.refresh();
     }
 }
 
