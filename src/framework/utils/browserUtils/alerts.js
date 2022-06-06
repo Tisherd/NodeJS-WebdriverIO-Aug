@@ -24,7 +24,7 @@ class Alerts {
     static async isOpen() {
         Logger.info(`Check alert`);
         try {
-            await Alert.getText();
+            await Alerts.getText();
             return true;
         } catch {
             return false;

@@ -15,7 +15,7 @@ class BaseElement {
         const elems = await this.getElements();
         const listOfElements = [];
         for (const [key, elem] of elems.entries()) {
-            arr.push(new this.constructor(elem, `${key} elem`));
+            listOfElements.push(new this.constructor(elem, `'${this.#name}'-${key} elem`));
         }
         return listOfElements;
     }
@@ -116,6 +116,10 @@ class BaseElement {
         const elem = await this.getElement();
         Logger.info(`'${this.#name}': save screenshot to ${path}`);
         return elem.saveScreenshot(path);
+    }
+
+    getName(){
+        return this.#name;
     }
 }
 

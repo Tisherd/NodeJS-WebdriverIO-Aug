@@ -1,6 +1,4 @@
 const Logger = require('../logger/logger');
-const browser = require('../browser/browser');
-
 class IFrames {
     static async switchToFrame(frameId) {
         Logger.info(`Switch to frame '${frameId}'`);

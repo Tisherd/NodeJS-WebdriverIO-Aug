@@ -8,14 +8,14 @@ class Textarea extends BaseElement {
 
     async setValue(text) {        
         const elem = await this.getElement();
-        Logger.info(`'${this.name}': Send '${text}'`);
+        Logger.info(`'${this.getName()}': Send '${text}'`);
         await elem.waitForDisplayed();
         return elem.setValue(text);
     }
 
     async clear() {        
         const elem = await this.getElement();
-        Logger.info(`'${this.name}': Clear value`);
+        Logger.info(`'${this.getName()}': Clear value`);
         await elem.waitForDisplayed();
         return elem.clearValue();
     }
