@@ -8,9 +8,17 @@ class ProjectApi {
             params: {
                 variant: variant
             }
-        })
+        });
     }
 
+    async getJson(){
+        const url = apiConfig.baseUrl + '/test/get/json';
+        return Requests.post(url, {
+            params: {
+                projectId: '1'
+            }
+        });
+    }
 }
 
 module.exports = new ProjectApi();
