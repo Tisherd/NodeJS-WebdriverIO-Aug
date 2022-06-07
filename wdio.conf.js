@@ -3,7 +3,6 @@ exports.config = {
         './test/*'
     ],
     exclude: [
-        // 'path/to/excluded/files'
     ],
     maxInstances: 10,
     capabilities: [{

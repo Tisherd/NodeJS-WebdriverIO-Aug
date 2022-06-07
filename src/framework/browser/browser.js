@@ -27,23 +27,16 @@ class Browser {
     }
 
     static async close() {
-        Logger.info(`Browser: close window`)
+        Logger.info(`Browser: close window`);
         await browser.closeWindow();
     }
 
-    static async setCookies(params) {
-        await browser.setCookies(params);
+    static async saveScreenshot(path) {
+        Logger.info(`Browser: save screenshot`);
+        await browser.saveScreenshot(path);
     }
 
-    static async getCookies(names) {
-        await browser.getCookies(names);
-    }
-
-    static async deleteCookies(names) {
-        await browser.deleteCookies(names);
-    }
-
-    static async refresh(){
+    static async refresh() {
         await browser.refresh();
     }
 }

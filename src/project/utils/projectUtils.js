@@ -1,3 +1,5 @@
+const convert = require('xml-js');
+
 class ProjectUtils {
     static isSorted(list, reverse = false) {
         let comparisonFunction;
@@ -38,7 +40,6 @@ class ProjectUtils {
             dateList.push(new Date(listElem));
         }
         return dateList;
-
     }
 
     static tableListToObject(list) {
@@ -62,6 +63,49 @@ class ProjectUtils {
         return resultList;
     }
 
+    static responseToObject(resData) {
+        if (typeof resData == "string") {
+            if (resData.indexOf('<test>') != -1) {
+                const resultList = [];
+                const xmlShell = '<t>' + resData + '</t>';
+                const xmlObject = convert.xml2js(xmlShell, { compact: true, spaces: 4 });
+                for (const test of xmlObject.t.test) {
+                    const collector = {};
+                    collector.name = test.name._text;
+                    collector.method = test.method._text;
+                    collector.status = test.status._text;
+                    collector.startTime = test.startTime._text;
+                    if (test.endTime) {
+                        collector.endTime = test.endTime._text;
+                    }
+                    collector.duration = test.duration._text;
+                    resultList.push(collector);
+                }
+                return resultList;
+            }
+            else {
+                const resultList = [];
+                const rows = resData.split('\n');
+                for (const row of rows) {
+                    const collector = {};
+                    const cells = row.split(',');
+                    collector.name = cells[0];
+                    collector.method = cells[1];
+                    collector.status = cells[2];
+                    collector.startTime = cells[3];
+                    if (cells[4] != 'null') {
+                        collector.endTime = cells[4];
+                    }
+                    collector.duration = cells[5];
+                    resultList.push(collector);
+                }
+                return resultList;
+            }
+        }
+        else {
+            return resData;
+        }
+    }
 }
 
 module.exports = ProjectUtils;

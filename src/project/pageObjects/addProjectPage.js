@@ -9,23 +9,21 @@ class AddProjectPage extends BaseForm {
     #saveProjectButton = new Button("//button[@type='submit']", "Save project button");
     #successMessage = new Label("//div[contains(@class,'alert-success') and contains(text(),'saved')]", "Success message")
 
-    constructor(){
+    constructor() {
         super(AddProjectPage.#pageElement, 'AddProjectPage');
     }
 
-    async setProjectName(name){
+    async setProjectName(name) {
         return this.#projectNameArea.setValue(name);
     }
 
-    async clickSaveProjectButton(){
+    async clickSaveProjectButton() {
         return this.#saveProjectButton.click();
     }
 
-    async isPresentSuccessMessage(){
+    async isPresentSuccessMessage() {
         return this.#successMessage.isElementPresent();
     }
-
-
 }
 
 module.exports = new AddProjectPage();

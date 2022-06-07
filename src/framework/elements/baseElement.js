@@ -65,7 +65,7 @@ class BaseElement {
     async isElementPresent(timeout) {
         Logger.info(`'${this.#name}': Check element present`);
         try {
-            await this.waitForDisplayed({timeout:timeout});
+            await this.waitForDisplayed({ timeout: timeout });
             return true;
         } catch {
             Logger.warn(`'${this.#name}': Element is missing`)
@@ -77,7 +77,7 @@ class BaseElement {
         Logger.info(`'${this.#name}': Check element disappeared`);
         const reverse = true;
         try {
-            await this.waitForDisplayed({timeout:timeout}, reverse);
+            await this.waitForDisplayed({ timeout: timeout }, reverse);
             return true;
         } catch {
             Logger.warn(`'${this.#name}': Element is present`)
@@ -118,7 +118,7 @@ class BaseElement {
         return elem.saveScreenshot(path);
     }
 
-    getName(){
+    getName() {
         return this.#name;
     }
 }

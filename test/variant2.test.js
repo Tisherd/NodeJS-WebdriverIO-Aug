@@ -12,6 +12,7 @@ const projectPage = require('../src/project/pageObjects/projectPage');
 const testData = require('../src/project/resourses/testData/testData');
 const ProjectUtils = require('../src/project/utils/projectUtils');
 
+
 describe('Smart VK API test', async () => {
     it('Main scenario', async () => {
 
@@ -38,20 +39,18 @@ describe('Smart VK API test', async () => {
         assert.isTrue(await projectPage.isPageOpen(), "ProjectPage isn't open");
         const testsTable = await projectPage.getTestsTableData();
 
-        const dateStartStringList = ProjectUtils.getInternalParameterListByIndex(testsTable, 3);  //v testDAta
+        const dateStartStringList = ProjectUtils.getInternalParameterListByIndex(testsTable, testData.startIndex);
         const dateList = ProjectUtils.elemListToDateList(dateStartStringList);
         const reverseSorting = true;
         const isSortedDateList = ProjectUtils.isSorted(dateList, reverseSorting);
-        assert.isTrue(isSortedDateList,"Tests aren't sorted on page");
+        assert.isTrue(isSortedDateList, "Tests aren't sorted on page");
 
-        const res = await projectApi.getJson();
+        const getJsonRes = await projectApi.getJson(testData.projectId);
         const tableObjectsList = ProjectUtils.tableListToObject(testsTable);
+        const getJsonResAsObject = ProjectUtils.responseToObject(getJsonRes.data);
 
-
-
-        for (const [key, test] of tableObjectsList.entries()){
-            //console.log(key)
-            assert.deepInclude(await res.data, test,"Tests from api don't include tests from ui");
+        for (const test of tableObjectsList) {
+            assert.deepInclude(getJsonResAsObject, test, "Tests from api don't include tests from ui");
         }
 
         //---------------step4-------------------
@@ -59,16 +58,34 @@ describe('Smart VK API test', async () => {
         await projectPage.clickToHomePageButton();
         assert.isTrue(await homePage.isPageOpen(), "HomePage isn't open");
         await homePage.clickAddProjectButton();
+        const mainWindowHandle = await WindowHandles.getCurrent();
+        const newWindowHandle = await WindowHandles.getNewHandle();
         await WindowHandles.switchToNew();
-        assert.isTrue(await addProjectPage.isPageOpen(), "AddProjectPage isn't open");
-        await addProjectPage.setProjectName(testData.newProjectName);
-        await addProjectPage.clickSaveProjectButton();
-        assert.isTrue(await addProjectPage.isPresentSuccessMessage(), "No success message");
+        //assert.isTrue(await addProjectPage.isPageOpen(), "AddProjectPage isn't open");
+        //await addProjectPage.setProjectName(testData.newProjectName);
+        //await addProjectPage.clickSaveProjectButton();
+        //assert.isTrue(await addProjectPage.isPresentSuccessMessage(), "No success message");
 
         await browser.executeAsync('window.close()');
+        await WindowHandles.switchTo(mainWindowHandle);
 
+        assert.isFalse(await WindowHandles.isWindowOpen(newWindowHandle), "Adding project window isn't closed");
         assert.isTrue(await homePage.isPageOpen(), "HomePage isn't open");
+        await Browser.refresh();
+        assert.isTrue(await homePage.isPresentToProjectButton(testData.newProjectName), "The project isn't in the list");
 
-        await browser.pause('3000');
+        //---------------step5-------------------
+
+        await homePage.clickToProjectButton(testData.newProjectName);
+        assert.isTrue(await projectPage.isPageOpen(), "ProjectPage isn't open");
+        const response = await projectApi.putTest(testData.addTestData);
+        console.log(response.data)
+        await Browser.saveScreenshot('scrsht.png');
+        //await browser.pause('10000');
+        await projectApi.putTestLog(response.data);
+        await projectApi.putTestAttachment(response.data);
+
+
+        await browser.pause('5000');
     });
 });

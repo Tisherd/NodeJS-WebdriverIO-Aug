@@ -7,26 +7,29 @@ class HomePage extends BaseForm {
     static #pageElement = "//div[@class='panel-heading' and contains(text(), 'Available projects')]";
     #versionText = new Label("//p[contains(@class, 'footer-text')]/span | //p[contains(@class, 'footer-text')]/b", 'Version text');
     #addProjectButton = new Button("//a[@target='_blank']", "Add project button");
-    #toProjectButton(projectName){ 
+    #toProjectButton(projectName) {
         return new Button(`//a[@class='list-group-item' and contains(text(), '${projectName}')]`, `${projectName} href`);
     }
 
-    constructor(){
+    constructor() {
         super(HomePage.#pageElement, 'HomePage');
     }
 
-    async getVersionText(){
+    async getVersionText() {
         return this.#versionText.getText();
     }
 
-    async clickToProjectButton(projectName){
+    async clickToProjectButton(projectName) {
         return this.#toProjectButton(projectName).click();
     }
 
-    async clickAddProjectButton(){
+    async clickAddProjectButton() {
         return this.#addProjectButton.click();
     }
 
+    async isPresentToProjectButton(projectName) {
+        return this.#toProjectButton(projectName).isElementPresent();
+    }
 }
 
 module.exports = new HomePage();

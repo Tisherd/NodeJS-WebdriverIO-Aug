@@ -12,13 +12,13 @@ class ProjectPage extends BaseForm {
         super(ProjectPage.#pageElement, 'ProjectPage');
     }
 
-    async getTestsTableData(){
+    async getTestsTableData() {
         return this.#testsTable.getTableData();
     }
 
-    async clickToHomePageButton(){
+    async clickToHomePageButton() {
         return this.#toHomePageButton.click();
-    }  
+    }
 }
 
 module.exports = new ProjectPage();
