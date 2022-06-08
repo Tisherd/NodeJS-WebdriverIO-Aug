@@ -37,6 +37,7 @@ class Browser {
     }
 
     static async refresh() {
+        Logger.info(`Browser: refresh`);
         await browser.refresh();
     }
 }

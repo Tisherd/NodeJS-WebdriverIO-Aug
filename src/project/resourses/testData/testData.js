@@ -1,6 +1,7 @@
+const configData = require("../../../framework/configData/configData");
 const Random = require("../../../framework/utils/random/random");
 
-const newProjectName = 'Semi'
+const newProjectName = 'ProjectName'
 
 module.exports = {
     variant: '2',
@@ -9,8 +10,10 @@ module.exports = {
     password: 'password',
     cookieName: 'token',
     projectName: 'Nexage',
+    image1: configData.cachePath + '/scrsht.png',
     projectId: '1',
     startIndex: 3,
+    contentTypeIsPng: "image/png",
     newProjectName: newProjectName,
     addTestData: {
         sid: "sid",

@@ -9,5 +9,6 @@ module.exports = {
 
     waits: {
         timeout: 10000
-    }
+    },
+    cachePath: '.cache'
 }

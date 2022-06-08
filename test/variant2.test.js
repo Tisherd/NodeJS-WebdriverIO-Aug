@@ -1,8 +1,12 @@
 require('../src/framework/test/baseTest');
 const { assert } = require('chai');
 const Browser = require('../src/framework/browser/browser');
+const { loggerPaths } = require('../src/framework/configData/logger.conf');
 const Cookies = require('../src/framework/utils/browserUtils/cookies');
+const JsScripts = require('../src/framework/utils/browserUtils/jsScripts');
 const WindowHandles = require('../src/framework/utils/browserUtils/windowHandles');
+const FileUtils = require('../src/framework/utils/fileUtils/fileUtils');
+const ImageUtils = require('../src/framework/utils/imageUtils/imageUtils');
 const StringUtils = require('../src/framework/utils/stringUtils/stringUtils');
 
 const projectApi = require('../src/project/api/projectApi');
@@ -20,7 +24,6 @@ describe('Smart VK API test', async () => {
 
         const tokenResponse = await projectApi.getToken(testData.variant);
         assert.exists(tokenResponse.data, "Token isn't generated");
-        console.log(tokenResponse.data)
 
         //---------------step2-------------------
 
@@ -35,23 +38,23 @@ describe('Smart VK API test', async () => {
 
         //---------------step3-------------------
 
-        // await homePage.clickToProjectButton(testData.projectName);
-        // assert.isTrue(await projectPage.isPageOpen(), "ProjectPage isn't open");
-        // const testsTable = await projectPage.getTestsTableData();
+        await homePage.clickToProjectButton(testData.projectName);
+        assert.isTrue(await projectPage.isPageOpen(), "ProjectPage isn't open");
+        const testsTable = await projectPage.getTestsTableData();
 
-        // const dateStartStringList = ProjectUtils.getInternalParameterListByIndex(testsTable, testData.startIndex);
-        // const dateList = ProjectUtils.elemListToDateList(dateStartStringList);
-        // const reverseSorting = true;
-        // const isSortedDateList = ProjectUtils.isSorted(dateList, reverseSorting);
-        // assert.isTrue(isSortedDateList, "Tests aren't sorted on page");
+        const dateStartStringList = ProjectUtils.getInternalParameterListByIndex(testsTable, testData.startIndex);
+        const dateList = ProjectUtils.elemListToDateList(dateStartStringList);
+        const reverseSorting = true;
+        const isSortedDateList = ProjectUtils.isSorted(dateList, reverseSorting);
+        assert.isTrue(isSortedDateList, "Tests aren't sorted on page");
 
-        // const getJsonRes = await projectApi.getJson(testData.projectId);
-        // const tableObjectsList = ProjectUtils.tableListToObject(testsTable);
-        // const getJsonResAsObject = ProjectUtils.responseToObject(getJsonRes.data);
+        const getJsonRes = await projectApi.getJson(testData.projectId);
+        const tableObjectsList = ProjectUtils.tableListToObject(testsTable);
+        const getJsonResAsObject = ProjectUtils.responseToObject(getJsonRes.data);
 
-        // for (const test of tableObjectsList) {
-        //     assert.deepInclude(getJsonResAsObject, test, "Tests from api don't include tests from ui");
-        // }
+        for (const test of tableObjectsList) {
+            assert.deepInclude(getJsonResAsObject, test, "Tests from api don't include tests from ui");
+        }
 
         //---------------step4-------------------
 
@@ -61,12 +64,13 @@ describe('Smart VK API test', async () => {
         const mainWindowHandle = await WindowHandles.getCurrent();
         const newWindowHandle = await WindowHandles.getNewHandle();
         await WindowHandles.switchToNew();
-        //assert.isTrue(await addProjectPage.isPageOpen(), "AddProjectPage isn't open");
-        //await addProjectPage.setProjectName(testData.newProjectName);
-        //await addProjectPage.clickSaveProjectButton();
-        //assert.isTrue(await addProjectPage.isPresentSuccessMessage(), "No success message");
+        assert.isTrue(await addProjectPage.isPageOpen(), "AddProjectPage isn't open");
+        await addProjectPage.setProjectName(testData.newProjectName);
+        await addProjectPage.clickSaveProjectButton();
+        assert.isTrue(await addProjectPage.isPresentSuccessMessage(), "No success message");
 
-        await browser.executeAsync('window.close()');
+
+        await JsScripts.closeWindow();
         await WindowHandles.switchTo(mainWindowHandle);
 
         assert.isFalse(await WindowHandles.isWindowOpen(newWindowHandle), "Adding project window isn't closed");
@@ -78,14 +82,17 @@ describe('Smart VK API test', async () => {
 
         await homePage.clickToProjectButton(testData.newProjectName);
         assert.isTrue(await projectPage.isPageOpen(), "ProjectPage isn't open");
-        const response = await projectApi.putTest(testData.addTestData);
-        console.log(response.data)
-        await Browser.saveScreenshot('scrsht.png');
-        //await browser.pause('10000');
-        await projectApi.putTestLog(response.data);
-        await projectApi.putTestAttachment(response.data);
+        const testId = (await projectApi.putTest(testData.addTestData)).data;
+        await Browser.saveScreenshot(testData.image1);
 
+        const logsString = (await FileUtils.readFile(loggerPaths.combinedPath)).toString().replace(/\r?\n|\r/g, '<br >');
+        const jpgFile = await ImageUtils.pngToJpg(testData.image1);
+        await ImageUtils.resize(jpgFile);
+        const base64 = await ImageUtils.imageToBase64(jpgFile);
 
-        await browser.pause('5000');
+        await projectApi.putTestLog(testId, logsString);
+        await projectApi.putTestAttachment(testId, base64, testData.contentTypeIsPng);
+
+        assert.isTrue(await projectPage.isPresentProjectTest(testId));
     });
 });
