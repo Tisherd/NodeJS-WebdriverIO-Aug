@@ -7,6 +7,9 @@ const ar = require('fs')
 const FormDataUtils = require("../../framework/utils/formDataUtils/formDataUtils");
 const imageToBase64 = require('image-to-base64');
 
+const Jimp = require("jimp");
+const gm = require('gm');
+
 const pngToJpeg = require('png-to-jpeg');
 class ProjectApi {
     async getToken(variant) {
@@ -61,7 +64,37 @@ class ProjectApi {
             'bAdVYhNeINXBMwmXWCTQGG2Y+Jj+dFrfEmiMAtmeowpo9ojTvkD+A/L1UJUMmiVfkuz6WTyZhFRJAgP33j3bsM5k/Fng68UP21hYJyyxZwLWuS' +
             '2cKMfUSm3rhD0g4E2g197fwMZ+Bgt8rNe2iP2BhL5dgfFzrx8AfECEDdx45a0AAAAASUVORK5CYII='
 
-        const base644 = await imageToBase64('sas3.jpg')
+
+
+        Jimp.read("scrsht.png", function (err, image) {
+            if (err) {
+
+                // Return if any error
+                console.log(err);
+                return;
+            }
+
+            // Convert image to JPG and store it to 
+            // './output/' folder with 'out.jpg' name
+            image.write("scrsht.jpg");
+        });
+
+        await browser.pause('2000');
+
+        gm("scrsht.png").compress('JPEG').autoOrient().write('scrsht2.png', function (err) {
+            if (!err) console.log(' hooray! ');
+        });
+
+        gm('scrsht.jpg')
+            .resize(192, 108)
+            .autoOrient()
+            .write('scrsht.jpg', function (err) {
+                if (!err) console.log(' hooray! ');
+            });
+
+        await browser.pause('2000');
+
+        const base644 = await imageToBase64('scrsht.jpg')
 
         // //await fs.writeFile('sond.png', filePart);
         // //const buffer = Buffer.from(filePart, "base64");
@@ -74,19 +107,15 @@ class ProjectApi {
         // let buffer2 = await fs.readFile("scrsht.png");
         // pngToJpeg({ quality: 30 })(buffer2)
         //     .then(output => ar.writeFileSync("scr.jpeg", output));
-        const filePart = await fs.readFile('scr.jpeg', 'base64');
+        //const filePart = await fs.readFile('scr.jpeg', 'base64');
 
         // const formData = new FormData();
         // formData.append('s', base644)
-        
-        console.log(base644);
+
+        //console.log(base644);
+        console.log(data.length)
         console.log(base644.length);
-        //console.log(typeof data);
-        //const sevem = new Buffer.from(filePart).toString('')
         return Requests.post(url, {
-            // data: {
-            //     content: base644
-            // },
             params: {
                 testId: testId,
                 content: base644,

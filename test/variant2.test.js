@@ -35,23 +35,23 @@ describe('Smart VK API test', async () => {
 
         //---------------step3-------------------
 
-        await homePage.clickToProjectButton(testData.projectName);
-        assert.isTrue(await projectPage.isPageOpen(), "ProjectPage isn't open");
-        const testsTable = await projectPage.getTestsTableData();
+        // await homePage.clickToProjectButton(testData.projectName);
+        // assert.isTrue(await projectPage.isPageOpen(), "ProjectPage isn't open");
+        // const testsTable = await projectPage.getTestsTableData();
 
-        const dateStartStringList = ProjectUtils.getInternalParameterListByIndex(testsTable, testData.startIndex);
-        const dateList = ProjectUtils.elemListToDateList(dateStartStringList);
-        const reverseSorting = true;
-        const isSortedDateList = ProjectUtils.isSorted(dateList, reverseSorting);
-        assert.isTrue(isSortedDateList, "Tests aren't sorted on page");
+        // const dateStartStringList = ProjectUtils.getInternalParameterListByIndex(testsTable, testData.startIndex);
+        // const dateList = ProjectUtils.elemListToDateList(dateStartStringList);
+        // const reverseSorting = true;
+        // const isSortedDateList = ProjectUtils.isSorted(dateList, reverseSorting);
+        // assert.isTrue(isSortedDateList, "Tests aren't sorted on page");
 
-        const getJsonRes = await projectApi.getJson(testData.projectId);
-        const tableObjectsList = ProjectUtils.tableListToObject(testsTable);
-        const getJsonResAsObject = ProjectUtils.responseToObject(getJsonRes.data);
+        // const getJsonRes = await projectApi.getJson(testData.projectId);
+        // const tableObjectsList = ProjectUtils.tableListToObject(testsTable);
+        // const getJsonResAsObject = ProjectUtils.responseToObject(getJsonRes.data);
 
-        for (const test of tableObjectsList) {
-            assert.deepInclude(getJsonResAsObject, test, "Tests from api don't include tests from ui");
-        }
+        // for (const test of tableObjectsList) {
+        //     assert.deepInclude(getJsonResAsObject, test, "Tests from api don't include tests from ui");
+        // }
 
         //---------------step4-------------------
 
